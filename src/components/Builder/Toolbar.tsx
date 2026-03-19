@@ -7,10 +7,24 @@ interface ToolbarProps {
   pageTitle: string;
   onSave: () => void;
   isSaving: boolean;
+  saveStatus?: "idle" | "saving" | "saved" | "error";
 }
 
-export function Toolbar({ pageTitle, onSave, isSaving }: ToolbarProps) {
+export function Toolbar({ pageTitle, onSave, isSaving, saveStatus = "idle" }: ToolbarProps) {
   const { canUndo, canRedo, undo, redo, components } = useBuilderContext();
+
+  const getSaveButtonText = () => {
+    if (isSaving || saveStatus === "saving") return "保存中...";
+    if (saveStatus === "saved") return "✓ 已保存";
+    if (saveStatus === "error") return "⚠ 重试";
+    return "💾 保存";
+  };
+
+  const getSaveButtonClass = () => {
+    if (saveStatus === "saved") return "bg-green-600 hover:bg-green-700 text-white font-semibold";
+    if (saveStatus === "error") return "bg-red-600 hover:bg-red-700 text-white font-semibold";
+    return "bg-blue-600 hover:bg-blue-700 text-white font-semibold";
+  };
 
   return (
     <div className="border-b border-gray-200 bg-white px-6 py-4">
@@ -22,7 +36,7 @@ export function Toolbar({ pageTitle, onSave, isSaving }: ToolbarProps) {
           </p>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
           <Button
             variant="outline"
             onClick={undo}
@@ -41,10 +55,10 @@ export function Toolbar({ pageTitle, onSave, isSaving }: ToolbarProps) {
           </Button>
           <Button
             onClick={onSave}
-            disabled={isSaving}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+            disabled={isSaving || saveStatus === "saving"}
+            className={getSaveButtonClass()}
           >
-            {isSaving ? "保存中..." : "💾 保存"}
+            {getSaveButtonText()}
           </Button>
         </div>
       </div>

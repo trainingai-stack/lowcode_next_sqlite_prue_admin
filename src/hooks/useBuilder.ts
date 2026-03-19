@@ -8,6 +8,7 @@ const initialState: BuilderState = {
   selectedComponentId: null,
   history: [[]],
   historyIndex: 0,
+  clipboard: null,
 };
 
 function builderReducer(state: BuilderState, action: BuilderAction): BuilderState {
@@ -65,6 +66,71 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
         ...state,
         selectedComponentId: action.payload,
       };
+    }
+
+    case "MOVE_COMPONENT_UP": {
+      const index = state.components.findIndex((c) => c.id === action.payload);
+      if (index > 0) {
+        const newComponents = [...state.components];
+        [newComponents[index - 1], newComponents[index]] = [
+          newComponents[index],
+          newComponents[index - 1],
+        ];
+        return {
+          ...state,
+          components: newComponents,
+          history: [...state.history.slice(0, state.historyIndex + 1), newComponents],
+          historyIndex: state.historyIndex + 1,
+        };
+      }
+      return state;
+    }
+
+    case "MOVE_COMPONENT_DOWN": {
+      const index = state.components.findIndex((c) => c.id === action.payload);
+      if (index < state.components.length - 1) {
+        const newComponents = [...state.components];
+        [newComponents[index], newComponents[index + 1]] = [
+          newComponents[index + 1],
+          newComponents[index],
+        ];
+        return {
+          ...state,
+          components: newComponents,
+          history: [...state.history.slice(0, state.historyIndex + 1), newComponents],
+          historyIndex: state.historyIndex + 1,
+        };
+      }
+      return state;
+    }
+
+    case "COPY_COMPONENT": {
+      const component = state.components.find((c) => c.id === action.payload);
+      if (component) {
+        return {
+          ...state,
+          clipboard: component,
+        };
+      }
+      return state;
+    }
+
+    case "PASTE_COMPONENT": {
+      if (state.clipboard) {
+        const newComponent = {
+          ...state.clipboard,
+          id: `${state.clipboard.id}-${Date.now()}`,
+        };
+        const newComponents = [...state.components, newComponent];
+        return {
+          ...state,
+          components: newComponents,
+          history: [...state.history.slice(0, state.historyIndex + 1), newComponents],
+          historyIndex: state.historyIndex + 1,
+          selectedComponentId: newComponent.id,
+        };
+      }
+      return state;
     }
 
     case "UNDO": {
@@ -125,6 +191,22 @@ export function useBuilder(initialComponents: ComponentConfig[] = []) {
     dispatch({ type: "SELECT_COMPONENT", payload: id });
   }, []);
 
+  const moveComponentUp = useCallback((id: string) => {
+    dispatch({ type: "MOVE_COMPONENT_UP", payload: id });
+  }, []);
+
+  const moveComponentDown = useCallback((id: string) => {
+    dispatch({ type: "MOVE_COMPONENT_DOWN", payload: id });
+  }, []);
+
+  const copyComponent = useCallback((id: string) => {
+    dispatch({ type: "COPY_COMPONENT", payload: id });
+  }, []);
+
+  const pasteComponent = useCallback(() => {
+    dispatch({ type: "PASTE_COMPONENT" });
+  }, []);
+
   const undo = useCallback(() => {
     dispatch({ type: "UNDO" });
   }, []);
@@ -138,11 +220,16 @@ export function useBuilder(initialComponents: ComponentConfig[] = []) {
     selectedComponentId: state.selectedComponentId,
     canUndo: state.historyIndex > 0,
     canRedo: state.historyIndex < state.history.length - 1,
+    hasClipboard: state.clipboard !== null,
     addComponent,
     removeComponent,
     updateComponent,
     reorderComponents,
     selectComponent,
+    moveComponentUp,
+    moveComponentDown,
+    copyComponent,
+    pasteComponent,
     undo,
     redo,
   };

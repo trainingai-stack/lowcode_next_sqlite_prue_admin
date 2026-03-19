@@ -9,11 +9,16 @@ interface BuilderContextType {
   selectedComponentId: string | null;
   canUndo: boolean;
   canRedo: boolean;
+  hasClipboard: boolean;
   addComponent: (component: ComponentConfig) => void;
   removeComponent: (id: string) => void;
   updateComponent: (component: ComponentConfig) => void;
   reorderComponents: (components: ComponentConfig[]) => void;
   selectComponent: (id: string | null) => void;
+  moveComponentUp: (id: string) => void;
+  moveComponentDown: (id: string) => void;
+  copyComponent: (id: string) => void;
+  pasteComponent: () => void;
   undo: () => void;
   redo: () => void;
 }

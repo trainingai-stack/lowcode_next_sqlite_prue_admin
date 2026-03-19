@@ -19,7 +19,7 @@ export function SectionComponent({ component }: SectionComponentProps) {
   };
 
   return (
-    <div className={`${style?.padding || paddingClasses[padding]} ${backgroundColor || "bg-gray-50"}`}>
+    <div className={`${style?.padding || paddingClasses[padding as keyof typeof paddingClasses]} ${backgroundColor || "bg-gray-50"}`}>
       <div className="mx-auto max-w-4xl">
         <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
         <div className="mt-4 text-gray-600">
