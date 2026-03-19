@@ -43,7 +43,7 @@ export function PropertyPanel() {
   };
 
   const handleDelete = () => {
-    if (confirm("确定要删除这个组件吗？")) {
+    if (confirm("确定要删除这个组件吗？") && selectedComponentId) {
       removeComponent(selectedComponentId);
     }
   };

@@ -127,5 +127,6 @@ export type BuilderAction =
   | { type: "UPDATE_COMPONENT"; payload: ComponentConfig }
   | { type: "REORDER_COMPONENTS"; payload: ComponentConfig[] }
   | { type: "SELECT_COMPONENT"; payload: string | null }
+  | { type: "MOVE_COMPONENT"; payload: { id: string; direction: "up" | "down" } }
   | { type: "UNDO" }
   | { type: "REDO" };

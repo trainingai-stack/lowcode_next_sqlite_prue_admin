@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { BuilderProvider } from "@/components/Builder/BuilderProvider";
 import { Toolbar } from "@/components/Builder/Toolbar";
 import { ComponentPanel } from "@/components/Builder/ComponentPanel";
@@ -20,20 +20,20 @@ interface PageData {
 function BuilderEditorContent({ pageId, pageData }: { pageId: string; pageData: PageData }) {
   const { components } = useBuilderContext();
   const [isSaving, setIsSaving] = useState(false);
+  const [lastSavedComponents, setLastSavedComponents] = useState<string>("");
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleSave = async () => {
-    if (!pageData) return;
+  const saveToDatabase = useCallback(async (componentsToSave: ComponentConfig[]) => {
+    const componentsJson = JSON.stringify(componentsToSave);
+    if (componentsJson === lastSavedComponents) return;
 
+    setIsSaving(true);
     try {
-      setIsSaving(true);
       const saveData = {
         title: pageData.title,
-        slug: pageData.slug,
         description: pageData.description,
-        components: JSON.stringify(components),
+        components: componentsJson,
       };
-
-      console.log("Saving data:", JSON.stringify(saveData, null, 2));
 
       const response = await fetch(`/api/builder/pages/${pageId}`, {
         method: "PUT",
@@ -42,39 +42,50 @@ function BuilderEditorContent({ pageId, pageData }: { pageId: string; pageData: 
       });
 
       const responseData = await response.json();
-      console.log("Response:", responseData);
-
       if (!response.ok) {
         const errorMsg = responseData.error || "保存失败";
-        const details = responseData.details ? JSON.stringify(responseData.details) : "";
-        throw new Error(details ? `${errorMsg}: ${details}` : errorMsg);
+        throw new Error(errorMsg);
       }
-      alert("页面已保存");
-    } catch (err) {
-      console.error("Save error:", err);
-      alert(err instanceof Error ? err.message : "保存失败");
+
+      setLastSavedComponents(componentsJson);
+    } catch (error) {
+      console.error("自动保存失败:", error);
     } finally {
       setIsSaving(false);
     }
+  }, [pageId, pageData.title, pageData.description, lastSavedComponents]);
+
+  useEffect(() => {
+    if (components.length === 0 && lastSavedComponents === "") return;
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      saveToDatabase(components);
+    }, 1000);
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [components, saveToDatabase]);
+
+  const handleManualSave = async () => {
+    await saveToDatabase(components);
   };
 
-  if (!pageData) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <p className="text-gray-600">加载中...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex h-screen flex-col pt-16">
+    <div className="flex h-screen flex-col">
       <Toolbar
         pageTitle={pageData.title}
-        onSave={handleSave}
+        onSave={handleManualSave}
         isSaving={isSaving}
       />
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-64 overflow-y-auto">
+        <div className="w-64 border-r border-gray-200 overflow-y-auto">
           <ComponentPanel />
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -112,7 +123,6 @@ export default function BuilderEditorPage({
         if (!response.ok) throw new Error("获取页面失败");
         const data = await response.json();
 
-        // 解析 components JSON 字符串
         const parsedData = {
           ...data,
           components: typeof data.components === "string"
@@ -142,8 +152,7 @@ export default function BuilderEditorPage({
           <p className="text-red-600 mb-4">{error}</p>
           <button
             onClick={() => window.location.href = "/builder"}
-            className="text-blue-600 hover:underline"
-          >
+            className="text-blue-600 hover:underline">
             返回列表
           </button>
         </div>

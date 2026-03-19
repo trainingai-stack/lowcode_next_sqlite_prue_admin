@@ -67,6 +67,28 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
       };
     }
 
+    case "MOVE_COMPONENT": {
+      const { id, direction } = action.payload;
+      const currentIndex = state.components.findIndex((c) => c.id === id);
+      if (currentIndex === -1) return state;
+
+      const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+      if (newIndex < 0 || newIndex >= state.components.length) return state;
+
+      const newComponents = [...state.components];
+      [newComponents[currentIndex], newComponents[newIndex]] = [
+        newComponents[newIndex],
+        newComponents[currentIndex],
+      ];
+
+      return {
+        ...state,
+        components: newComponents,
+        history: [...state.history.slice(0, state.historyIndex + 1), newComponents],
+        historyIndex: state.historyIndex + 1,
+      };
+    }
+
     case "UNDO": {
       if (state.historyIndex > 0) {
         const newIndex = state.historyIndex - 1;
@@ -125,6 +147,10 @@ export function useBuilder(initialComponents: ComponentConfig[] = []) {
     dispatch({ type: "SELECT_COMPONENT", payload: id });
   }, []);
 
+  const moveComponent = useCallback((id: string, direction: "up" | "down") => {
+    dispatch({ type: "MOVE_COMPONENT", payload: { id, direction } });
+  }, []);
+
   const undo = useCallback(() => {
     dispatch({ type: "UNDO" });
   }, []);
@@ -143,6 +169,7 @@ export function useBuilder(initialComponents: ComponentConfig[] = []) {
     updateComponent,
     reorderComponents,
     selectComponent,
+    moveComponent,
     undo,
     redo,
   };

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useRef, useCallback } from "react";
 import type { ComponentConfig } from "@/types/builder";
 import { useBuilder } from "@/hooks/useBuilder";
 
@@ -14,11 +14,15 @@ interface BuilderContextType {
   updateComponent: (component: ComponentConfig) => void;
   reorderComponents: (components: ComponentConfig[]) => void;
   selectComponent: (id: string | null) => void;
+  moveComponent: (id: string, direction: "up" | "down") => void;
   undo: () => void;
   redo: () => void;
+  copiedComponent: ComponentConfig | null;
+  copyComponent: (component: ComponentConfig) => void;
+  pasteComponent: () => void;
 }
 
-const BuilderContext = createContext<BuilderContextType | undefined>(undefined);
+const BuilderContext = createContext<BuilderContextType | null>(null);
 
 export function BuilderProvider({
   children,
@@ -28,9 +32,34 @@ export function BuilderProvider({
   initialComponents?: ComponentConfig[];
 }) {
   const builder = useBuilder(initialComponents);
+  const copiedComponentRef = useRef<ComponentConfig | null>(null);
+
+  const copyComponent = useCallback((component: ComponentConfig) => {
+    copiedComponentRef.current = component;
+  }, []);
+
+  const pasteComponent = useCallback(() => {
+    if (copiedComponentRef.current) {
+      const newComponent: ComponentConfig = {
+        ...copiedComponentRef.current,
+        id: `${copiedComponentRef.current.id}-copy-${Date.now()}`,
+        props: { ...copiedComponentRef.current.props },
+        style: copiedComponentRef.current.style
+          ? { ...copiedComponentRef.current.style }
+          : undefined,
+      };
+      builder.addComponent(newComponent);
+    }
+  }, [builder]);
 
   return (
-    <BuilderContext.Provider value={builder}>
+    <BuilderContext.Provider
+      value={{
+        ...builder,
+        copiedComponent: copiedComponentRef.current,
+        copyComponent,
+        pasteComponent,
+      }}>
       {children}
     </BuilderContext.Provider>
   );
