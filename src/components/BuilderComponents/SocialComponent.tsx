@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentConfig } from "@/types/builder";
+import type { ComponentConfig, SocialProps } from "@/types/builder";
 
 interface SocialComponentProps {
   component: ComponentConfig;
@@ -10,9 +10,9 @@ interface SocialComponentProps {
 
 export function SocialComponent({ component }: SocialComponentProps) {
   const { props, style } = component;
-  const { links, size } = props;
+  const { links, size } = props as SocialProps;
 
-  const sizeClasses = {
+  const sizeClasses: Record<SocialProps["size"], string> = {
     sm: "w-8 h-8 text-sm",
     md: "w-10 h-10 text-base",
     lg: "w-12 h-12 text-lg",
@@ -29,7 +29,7 @@ export function SocialComponent({ component }: SocialComponentProps) {
   return (
     <div className={`${style?.padding || "py-8"} ${style?.textAlign === "center" ? "text-center" : ""}`}>
       <div className="flex gap-4 justify-center">
-        {links.map((link: any, idx: number) => (
+        {links.map((link, idx: number) => (
           <a
             key={idx}
             href={link.url}

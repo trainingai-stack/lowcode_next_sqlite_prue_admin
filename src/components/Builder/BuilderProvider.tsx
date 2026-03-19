@@ -16,6 +16,9 @@ interface BuilderContextType {
   selectComponent: (id: string | null) => void;
   undo: () => void;
   redo: () => void;
+  moveComponentUp: (id: string) => void;
+  moveComponentDown: (id: string) => void;
+  duplicateComponent: (component: ComponentConfig) => void;
 }
 
 const BuilderContext = createContext<BuilderContextType | undefined>(undefined);

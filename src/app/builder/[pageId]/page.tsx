@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { BuilderProvider } from "@/components/Builder/BuilderProvider";
 import { Toolbar } from "@/components/Builder/Toolbar";
 import { ComponentPanel } from "@/components/Builder/ComponentPanel";
@@ -20,20 +20,21 @@ interface PageData {
 function BuilderEditorContent({ pageId, pageData }: { pageId: string; pageData: PageData }) {
   const { components } = useBuilderContext();
   const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const lastSavedComponents = useRef<string>(JSON.stringify(pageData.components));
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleSave = async () => {
+  const saveToDatabase = useCallback(async (componentsToSave: ComponentConfig[]) => {
     if (!pageData) return;
 
     try {
-      setIsSaving(true);
+      setSaveStatus("saving");
       const saveData = {
         title: pageData.title,
         slug: pageData.slug,
         description: pageData.description,
-        components: JSON.stringify(components),
+        components: JSON.stringify(componentsToSave),
       };
-
-      console.log("Saving data:", JSON.stringify(saveData, null, 2));
 
       const response = await fetch(`/api/builder/pages/${pageId}`, {
         method: "PUT",
@@ -41,14 +42,43 @@ function BuilderEditorContent({ pageId, pageData }: { pageId: string; pageData: 
         body: JSON.stringify(saveData),
       });
 
-      const responseData = await response.json();
-      console.log("Response:", responseData);
-
       if (!response.ok) {
-        const errorMsg = responseData.error || "保存失败";
-        const details = responseData.details ? JSON.stringify(responseData.details) : "";
-        throw new Error(details ? `${errorMsg}: ${details}` : errorMsg);
+        throw new Error("保存失败");
       }
+
+      lastSavedComponents.current = JSON.stringify(componentsToSave);
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    } catch (err) {
+      console.error("Auto save error:", err);
+      setSaveStatus("error");
+    }
+  }, [pageId, pageData]);
+
+  useEffect(() => {
+    const currentComponentsStr = JSON.stringify(components);
+    if (currentComponentsStr !== lastSavedComponents.current) {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      saveTimeoutRef.current = setTimeout(() => {
+        saveToDatabase(components);
+      }, 500);
+    }
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [components, saveToDatabase]);
+
+  const handleSave = async () => {
+    if (!pageData) return;
+
+    try {
+      setIsSaving(true);
+      await saveToDatabase(components);
       alert("页面已保存");
     } catch (err) {
       console.error("Save error:", err);
