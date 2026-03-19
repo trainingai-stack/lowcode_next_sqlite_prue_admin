@@ -29,7 +29,7 @@ export function TextComponent({ component }: TextComponentProps) {
   return (
     <div className={`${style?.padding || "py-4"} ${style?.textAlign ? `text-${style.textAlign}` : ""}`}>
       <p
-        className={`${fontSizeClasses[fontSize]} ${fontWeightClasses[fontWeight]} ${color || "text-gray-700"}`}
+        className={`${fontSizeClasses[fontSize as keyof typeof fontSizeClasses]} ${fontWeightClasses[fontWeight as keyof typeof fontWeightClasses]} ${color || "text-gray-700"}`}
       >
         {content}
       </p>

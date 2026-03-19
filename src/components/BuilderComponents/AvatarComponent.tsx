@@ -30,7 +30,7 @@ export function AvatarComponent({ component }: AvatarComponentProps) {
       <img
         src={imageUrl}
         alt="avatar"
-        className={`${sizeClasses[size]} ${shapeClasses[shape]} object-cover mx-auto`}
+        className={`${sizeClasses[size as keyof typeof sizeClasses]} ${shapeClasses[shape as keyof typeof shapeClasses]} object-cover mx-auto`}
       />
     </div>
   );

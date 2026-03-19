@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { BuilderProvider } from "@/components/Builder/BuilderProvider";
 import { Toolbar } from "@/components/Builder/Toolbar";
 import { ComponentPanel } from "@/components/Builder/ComponentPanel";
@@ -20,12 +20,77 @@ interface PageData {
 function BuilderEditorContent({ pageId, pageData }: { pageId: string; pageData: PageData }) {
   const { components } = useBuilderContext();
   const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSavedComponentsRef = useRef<string>(JSON.stringify(components));
 
+  // 实时保存函数（防抖）
+  const autoSave = useCallback(async () => {
+    if (!pageData) return;
+
+    const currentComponentsStr = JSON.stringify(components);
+    
+    // 检查是否有变化
+    if (currentComponentsStr === lastSavedComponentsRef.current) {
+      return;
+    }
+
+    // 清除之前的定时器
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // 设置新的定时器，500ms 后保存
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        setSaveStatus("saving");
+        const saveData = {
+          title: pageData.title,
+          slug: pageData.slug,
+          description: pageData.description,
+          components: currentComponentsStr,
+        };
+
+        const response = await fetch(`/api/builder/pages/${pageId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(saveData),
+        });
+
+        if (!response.ok) {
+          throw new Error("保存失败");
+        }
+
+        lastSavedComponentsRef.current = currentComponentsStr;
+        setSaveStatus("saved");
+        
+        // 2秒后恢复状态
+        setTimeout(() => setSaveStatus("idle"), 2000);
+      } catch (err) {
+        console.error("Auto save error:", err);
+        setSaveStatus("error");
+        setTimeout(() => setSaveStatus("idle"), 3000);
+      }
+    }, 500);
+  }, [pageId, pageData, components]);
+
+  // 监听 components 变化，触发自动保存
+  useEffect(() => {
+    autoSave();
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [autoSave]);
+
+  // 手动保存
   const handleSave = async () => {
     if (!pageData) return;
 
     try {
       setIsSaving(true);
+      setSaveStatus("saving");
       const saveData = {
         title: pageData.title,
         slug: pageData.slug,
@@ -33,25 +98,24 @@ function BuilderEditorContent({ pageId, pageData }: { pageId: string; pageData: 
         components: JSON.stringify(components),
       };
 
-      console.log("Saving data:", JSON.stringify(saveData, null, 2));
-
       const response = await fetch(`/api/builder/pages/${pageId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(saveData),
       });
 
-      const responseData = await response.json();
-      console.log("Response:", responseData);
-
       if (!response.ok) {
-        const errorMsg = responseData.error || "保存失败";
-        const details = responseData.details ? JSON.stringify(responseData.details) : "";
-        throw new Error(details ? `${errorMsg}: ${details}` : errorMsg);
+        throw new Error("保存失败");
       }
+
+      lastSavedComponentsRef.current = JSON.stringify(components);
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
       alert("页面已保存");
     } catch (err) {
       console.error("Save error:", err);
+      setSaveStatus("error");
+      setTimeout(() => setSaveStatus("idle"), 3000);
       alert(err instanceof Error ? err.message : "保存失败");
     } finally {
       setIsSaving(false);
@@ -72,6 +136,7 @@ function BuilderEditorContent({ pageId, pageData }: { pageId: string; pageData: 
         pageTitle={pageData.title}
         onSave={handleSave}
         isSaving={isSaving}
+        saveStatus={saveStatus}
       />
       <div className="flex flex-1 overflow-hidden">
         <div className="w-64 overflow-y-auto">

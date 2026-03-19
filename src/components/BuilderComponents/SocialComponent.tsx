@@ -35,7 +35,7 @@ export function SocialComponent({ component }: SocialComponentProps) {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className={`${sizeClasses[size]} flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-colors`}
+            className={`${sizeClasses[size as keyof typeof sizeClasses]} flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-colors`}
             title={link.platform}
           >
             {platformIcons[link.platform]}

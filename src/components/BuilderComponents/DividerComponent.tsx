@@ -20,7 +20,7 @@ export function DividerComponent({ component }: DividerComponentProps) {
 
   return (
     <div className={`${style?.margin || "my-8"}`}>
-      <hr className={`border-t-2 ${styleClasses[dividerStyle]} ${color || "border-gray-300"}`} />
+      <hr className={`border-t-2 ${styleClasses[dividerStyle as keyof typeof styleClasses]} ${color || "border-gray-300"}`} />
     </div>
   );
 }

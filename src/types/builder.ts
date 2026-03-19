@@ -118,6 +118,7 @@ export interface BuilderState {
   selectedComponentId: string | null;
   history: ComponentConfig[][];
   historyIndex: number;
+  clipboard: ComponentConfig | null;
 }
 
 // Builder 操作
@@ -127,5 +128,9 @@ export type BuilderAction =
   | { type: "UPDATE_COMPONENT"; payload: ComponentConfig }
   | { type: "REORDER_COMPONENTS"; payload: ComponentConfig[] }
   | { type: "SELECT_COMPONENT"; payload: string | null }
+  | { type: "MOVE_COMPONENT_UP"; payload: string }
+  | { type: "MOVE_COMPONENT_DOWN"; payload: string }
+  | { type: "COPY_COMPONENT"; payload: string }
+  | { type: "PASTE_COMPONENT" }
   | { type: "UNDO" }
   | { type: "REDO" };
