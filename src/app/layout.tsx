@@ -1,5 +1,5 @@
 import Header from "@/components/Header/Header";
-import ThemeProvider from "@/components/Providers/ThemeProvider";
+import ToastProvider from "@/components/Providers/ToastProvider";
 import { geistMono, geistSans } from "@/lib/fonts";
 import { ReactNode } from "react";
 import "./globals.css";
@@ -12,17 +12,13 @@ const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      suppressHydrationWarning>
-      <body>
-        <ThemeProvider
-          attribute={"class"}
-          defaultTheme="dark"
-          enableSystem={false}>
-          <Header />
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="bg-white">
+        <Header />
 
-          <main className="mx-auto max-w-7xl">{children}</main>
-        </ThemeProvider>
+        <main className="mx-auto max-w-7xl">{children}</main>
+
+        <ToastProvider />
       </body>
     </html>
   );
