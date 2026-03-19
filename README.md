@@ -1,35 +1,49 @@
-# Next.js Starter Fullstack Node
+# Low-Code Page Builder with Next.js & SQLite
 
-A production-ready Next.js starter template for fullstack development with modern tooling and best practices out of the box. Built with TypeScript, Tailwind CSS v4, Next.js App Router, and complete database integration with Prisma and SQLite.
+A powerful low-code page builder application built with Next.js, React, TypeScript, Tailwind CSS, and SQLite. Create and manage dynamic pages with a visual drag-and-drop interface without writing code.
 
 ## ✨ Features
 
-- ⚡ **Next.js 16** with App Router (latest stable)
-  - 🚀 **Turbopack (stable)** - Default bundler with 2-5× faster builds, up to 10× faster Fast Refresh
-  - 🛠️ Enhanced Routing & Caching APIs
-  - 🔍 Type-safe Routes with `typedRoutes` for better development experience
-- 🎨 **Tailwind CSS v4** with modern CSS variables and theming system
-  - 🌓 Built-in Dark/Light Mode with `next-themes`
-  - 🎨 Comprehensive design system with CSS custom properties
-  - 🛠️ **Styling Utilities**: `clsx`, `tailwind-merge`, and `class-variance-authority` for component styling
-  - 🎬 **Animation Support**: `tw-animate-css` for Tailwind CSS animations
-- ✨ **Lucide React Icons** for beautiful, consistent icons
-- 🛠 **TypeScript** for full type safety
-- 🎯 **React 19** with latest features and optimizations
-  - 🚀 **React Compiler Support (stable)** - Automatic memoization for better performance
-- 🧩 **shadcn/ui Ready** with components.json configuration
-  - 🎨 Base Nova style preset
-  - 📦 Ready for component installation
-- 🎉 **Toast Notifications** with react-toastify integrated
-- 🖼️ **Image Optimization** with `sharp`
-- 🔍 **ESLint** and **Prettier** for code quality
-- 🎭 **Theme Toggle Component** with smooth transitions
-- 📱 **Responsive Layout** with fixed header navigation
-- 🗄️ **Database Integration** with Prisma and SQLite
-  - 🚀 **libsql Adapter** for optimal performance
-  - 📝 **Type-safe Database Access** with generated Prisma Client
-  - 🔧 **Environment Configuration** with proper validation
-  - 📊 **Prisma Studio** for database management
+- 🎨 **Visual Page Builder**
+  - 🖱️ Drag-and-drop interface for building pages
+  - 🧩 Pre-built components (Hero, Card, Button, Text, Gallery, Contact, etc.)
+  - 📐 Real-time canvas preview
+  - 🎯 Property panel for component customization
+
+- 🏗️ **Component Library**
+  - Hero sections with customizable backgrounds
+  - Card components with flexible layouts
+  - Button components with multiple styles
+  - Text components with rich formatting
+  - Gallery components for image display
+  - Contact forms with validation
+  - Social media components
+  - Dividers and sections
+  - Avatar components
+
+- 💾 **Data Persistence**
+  - SQLite database with Prisma ORM
+  - Save and load page configurations
+  - Version control for pages
+  - Type-safe database operations
+
+- 🎯 **Modern Tech Stack**
+  - ⚡ **Next.js 16** with App Router and Turbopack
+  - 🎨 **Tailwind CSS v4** with dark/light mode support
+  - 🛠 **TypeScript** for full type safety
+  - 🎯 **React 19** with latest features
+  - 🧩 **shadcn/ui** components
+  - ✨ **Lucide React Icons**
+
+- 🌓 **Theme Support**
+  - Dark/Light mode toggle
+  - Smooth theme transitions
+  - CSS variable-based theming
+
+- 📱 **Responsive Design**
+  - Mobile-friendly builder interface
+  - Responsive component rendering
+  - Adaptive layouts
 
 ## 🚀 Getting Started
 
@@ -38,241 +52,185 @@ A production-ready Next.js starter template for fullstack development with moder
 - Node.js 22.x (LTS recommended)
 - npm 11.x or later (included with Node.js)
 - Git for version control
-- Bun (recommended for faster package management)
-
-> **Note:** This project uses Next.js 16.1.5 with React 19.2.4, featuring stable Turbopack (2-5× faster builds), React Compiler for optimal development experience, complete database integration with Prisma and SQLite, and toast notifications with react-toastify for fullstack development.
 
 ### Installation
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/MrSaikatS/nextjs-starter-fullstack-node.git
-   cd nextjs-starter-fullstack-node
+   git clone https://github.com/trainingai-stack/lowcode_next_sqlite_prue_admin.git
+   cd lowcode_next_sqlite_prue_admin
    ```
 
-2. Set up environment variables:
+2. Install dependencies:
 
    ```bash
-   cp .env.example .env
-   ```
-
-   The default configuration uses SQLite with a local database file. You can modify the `DATABASE_URL` in `.env` if needed.
-
-3. Install dependencies (using Bun is recommended for faster installation):
-
-   ```bash
-   # Using Bun (recommended)
-   bun install
-
-   # Or using npm
    npm install
    ```
 
-4. Set up the database:
+3. Set up the database:
 
    ```bash
-   # Using Bun
-   bun migrate
-
-   # Or using npm
    npm run migrate
    ```
 
    This command will create the database schema and generate the Prisma client.
 
-5. Start the development server:
+4. Start the development server:
 
    ```bash
-   # Using Bun (recommended for faster development)
-   bun dev
-
-   # Or using npm
    npm run dev
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
 ## 🛠 Development
 
-### Development Workflow
-
-1. **Environment Setup**: Copy `.env.example` to `.env` and configure your database URL
-2. **Database Setup**: Run `bun migrate` to create the database schema and generate the Prisma client
-3. **Start Development**: Use `bun dev` for the fastest development experience with Turbopack
-4. **Database Management**: Use `bun studio` to open Prisma Studio for visual database inspection
-5. **Code Quality**: Run `bun lint` before committing changes
-
 ### Available Scripts
 
-#### Using Bun (recommended)
-
-- `bun dev` - Start the development server with Turbopack (2-5× faster builds, up to 10× faster Fast Refresh)
-- `bun build` - Build for production with Prisma client generation and Turbopack
-- `bun start` - Start production server (for production deployment)
-- `bun lint` - Run ESLint
-- `bun prod` - Test production locally (lint, build with Prisma generation, and start production server)
-- `bun migrate` - Run Prisma migrations and generate client
-- `bun studio` - Open Prisma Studio for database management
-
-#### Using npm
-
 - `npm run dev` - Start the development server with Turbopack
-- `npm run build` - Build for production with Prisma client generation and Turbopack
-- `npm start` - Start production server (for production deployment)
+- `npm run build` - Build for production
+- `npm start` - Start production server
 - `npm run lint` - Run ESLint
-- `npm run prod` - Test production locally (lint, build with Prisma generation, and start production server)
 - `npm run migrate` - Run Prisma migrations and generate client
 - `npm run studio` - Open Prisma Studio for database management
+
+### Development Workflow
+
+1. **Start Development**: Use `npm run dev` for the fastest development experience
+2. **Build Pages**: Use the visual builder at `/builder` to create pages
+3. **Database Management**: Use `npm run studio` to inspect the database
+4. **Code Quality**: Run `npm run lint` before committing changes
 
 ## 📁 Project Structure
 
 ```
 src/
 ├── app/
-│   ├── globals.css          # Global styles with Tailwind CSS v4
-│   ├── layout.tsx           # Root layout with ThemeProvider and Header
-│   └── page.tsx             # Home page with main content
+│   ├── api/
+│   │   └── builder/
+│   │       └── pages/          # API endpoints for page management
+│   ├── builder/
+│   │   ├── page.tsx            # Builder home page
+│   │   └── [pageId]/page.tsx   # Page editor
+│   ├── globals.css             # Global styles
+│   ├── layout.tsx              # Root layout
+│   └── page.tsx                # Home page
 ├── components/
-│   ├── Buttons/
-│   │   ├── ThemeToggleButton.tsx # Dark/light mode toggle
-│   │   └── ToastButton.tsx      # Toast notification demo button
+│   ├── Builder/
+│   │   ├── BuilderProvider.tsx # Builder context provider
+│   │   ├── Canvas.tsx          # Canvas for page preview
+│   │   ├── ComponentPanel.tsx  # Component library panel
+│   │   ├── PropertyPanel.tsx   # Property editor
+│   │   └── Toolbar.tsx         # Builder toolbar
+│   ├── BuilderComponents/      # Pre-built components
+│   │   ├── AvatarComponent.tsx
+│   │   ├── ButtonComponent.tsx
+│   │   ├── CardComponent.tsx
+│   │   ├── ContactComponent.tsx
+│   │   ├── DividerComponent.tsx
+│   │   ├── GalleryComponent.tsx
+│   │   ├── HeroComponent.tsx
+│   │   ├── SectionComponent.tsx
+│   │   ├── SocialComponent.tsx
+│   │   ├── TextComponent.tsx
+│   │   └── ComponentRenderer.tsx
 │   ├── Header/
-│   │   └── Header.tsx       # Navigation header
+│   │   └── Header.tsx          # Navigation header
 │   ├── Providers/
-│   │   ├── ThemeProvider.tsx # Theme configuration
-│   │   └── ToastProvider.tsx # Toast container provider
-│   └── shadcnui/            # shadcn/ui components
-│       └── button.tsx       # Button component
+│   │   ├── ThemeProvider.tsx   # Theme configuration
+│   │   └── ToastProvider.tsx   # Toast notifications
+│   └── shadcnui/               # shadcn/ui components
 ├── hooks/
-│   └── .gitkeep             # Ready for custom hooks
+│   ├── useBuilder.ts           # Builder state management
+│   └── useDragDrop.ts          # Drag and drop functionality
 ├── lib/
+│   ├── builder/
+│   │   ├── defaults.ts         # Default component configurations
+│   │   ├── schemas.ts          # Type definitions
+│   │   └── utils.ts            # Builder utilities
 │   ├── database/
-│   │   └── dbClient.ts        # Prisma database client with libsql adapter
-│   ├── env/                   # Environment configuration
-│   │   ├── clientEnv.ts       # Client-side environment variables
-│   │   └── serverEnv.ts       # Server-side environment variables with Zod validation
-│   ├── fonts.ts               # Font configuration (Geist Sans/Mono)
-│   └── utils.ts               # Utility functions (cn helper)
+│   │   └── dbClient.ts         # Prisma database client
+│   ├── env/                    # Environment configuration
+│   └── utils.ts                # Utility functions
+└── types/
+    └── builder.ts              # TypeScript type definitions
 
 prisma/
-├── schema.prisma            # Database schema definition
-└── dev.db                   # SQLite database file (generated)
-
-generated/
-└── prisma/                  # Generated Prisma client
-    └── client/              # Type-safe database client
-
-.env.example                 # Environment variables template
-.env                         # Local environment variables (gitignored)
+├── schema.prisma               # Database schema
+└── dev.db                      # SQLite database file
 ```
 
-## 🗄️ Database
+## 🎨 Builder Features
 
-This project uses **Prisma** with **SQLite** for type-safe database operations:
+### Component Library
 
-### Database Setup
+The builder includes a comprehensive set of pre-built components:
 
-- **Database Provider**: SQLite with libsql Adapter for optimal performance
-- **Schema Management**: Prisma migrations for version control
-- **Type Safety**: Auto-generated TypeScript client
-- **Development**: Prisma Studio for visual database management
-- **Client Output**: Generated in `generated/prisma/client` directory
+- **Hero Component**: Full-width hero sections with customizable backgrounds
+- **Card Component**: Flexible card layouts with image and content areas
+- **Button Component**: Styled buttons with multiple variants
+- **Text Component**: Rich text content with formatting options
+- **Gallery Component**: Image gallery with grid layouts
+- **Contact Component**: Contact forms with validation
+- **Social Component**: Social media links and icons
+- **Avatar Component**: User avatars with customization
+- **Section Component**: Container sections for layout
+- **Divider Component**: Visual dividers and separators
 
-### Environment Configuration
+### Builder Interface
 
-The project uses a structured approach to environment variables:
+- **Drag-and-Drop Canvas**: Intuitive interface for building pages
+- **Component Panel**: Browse and add components to your page
+- **Property Panel**: Edit component properties in real-time
+- **Toolbar**: Quick access to builder actions
+- **Live Preview**: See changes instantly on the canvas
 
-- **`.env.example`**: Template for required environment variables
-- **`src/lib/env/clientEnv.ts`**: Client-side environment variables with type safety
-- **`src/lib/env/serverEnv.ts`**: Server-side environment variables with validation
-- **`src/lib/database/dbClient.ts`**: Singleton Prisma client instance with libsql adapter
+## 💾 Database Schema
 
-### Database Operations
+The application uses Prisma with SQLite to manage page data:
 
-```bash
-# Create and run migrations
-bun migrate  # or npm run migrate
+- **Pages**: Store page configurations and metadata
+- **Components**: Store component instances and their properties
+- **Layouts**: Manage page layouts and structures
 
-# Generate Prisma client (included in migrate command)
-prisma generate
-
-# Open Prisma Studio for database management
-bun studio  # or npm run studio
-```
-
-### Schema Customization
-
-The current `prisma/schema.prisma` contains a basic SQLite configuration with libsql adapter. To define your database models:
-
-1. Edit `prisma/schema.prisma` to add your models
-2. Run `bun migrate` to create a new migration
-3. The Prisma client will be automatically regenerated in `generated/prisma/client`
-4. Use the generated client in `src/lib/database/dbClient.ts` for type-safe database access
+Run `npm run studio` to open Prisma Studio and explore the database visually.
 
 ## 🎨 Theming
 
-This project uses `next-themes` for theme management with Tailwind CSS v4's modern theming system:
+This project uses `next-themes` for theme management:
 
 - **Default theme**: Dark mode
-- **Theme toggle**: Smooth animated button in header
+- **Theme toggle**: Available in the header
 - **CSS variables**: Comprehensive design system with light/dark variants
-- **shadcn/ui compatible**: Pre-configured for component theming
-
-The theming system supports both light and dark modes with smooth transitions and is fully accessible.
-
-## 🧩 shadcn/ui Integration
-
-This starter is pre-configured for shadcn/ui components:
-
-- **Components.json**: Configured with Base Nova style preset
-- **Path aliases**: Ready for component installation (`@/components/shadcnui`)
-- **Theme system**: Integrated with Tailwind CSS variables
-- **Icon library**: Lucide React icons configured
-- **Button component**: Pre-installed as example shadcn/ui component
+- **Smooth transitions**: Animated theme switching
 
 ## 🚀 Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4
-- **Database**: Prisma with SQLite (libsql Adapter)
-- **UI Components**: shadcn/ui (ready)
+- **Database**: Prisma with SQLite
+- **UI Components**: shadcn/ui
 - **Icons**: Lucide React
 - **Theme**: next-themes
-- **Image Optimization**: sharp
+- **State Management**: React Context (Builder Context)
 - **Code Quality**: ESLint, Prettier
-- **Package Manager**: Bun/npm support
-- **Environment**: Type-safe environment variables
-- **Validation**: Zod for schema validation
 
 ## 🔧 Configuration
 
-- **React Compiler**: Enabled in `next.config.ts`
+- **React Compiler**: Enabled for automatic memoization
 - **Typed Routes**: Enabled for type-safe navigation
 - **Path Aliases**: `@/*` mapped to `./src/*`
-- **Component Aliases**: Pre-configured for shadcn/ui
 - **Theme System**: Full CSS variable integration
-- **Database**: Prisma with libsql adapter
-- **Environment**: Structured client/server environment variables
-- **Validation**: Zod schemas for environment validation
+- **Database**: Prisma with SQLite adapter
 
 ## 📝 Environment Variables
-
-The project uses a structured approach to environment configuration:
-
-### Required Variables
 
 ```bash
 # Database
 DATABASE_URL="file:./prisma/dev.db"  # SQLite database path
 ```
-
-### Environment Structure
-
-- **Client Variables**: Accessible in browser (defined in `src/lib/env/clientEnv.ts`)
-- **Server Variables**: Server-side only (defined in `src/lib/env/serverEnv.ts`)
-- **Type Safety**: All environment variables are validated with Zod schemas
 
 Copy `.env.example` to `.env` and modify as needed for your environment.
 
@@ -296,6 +254,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Built with ❤️ by [Saikat Sardar](https://github.com/MrSaikatS)
-
-[![GitHub stars](https://img.shields.io/github/stars/MrSaikatS/nextjs-starter-fullstack-node?style=social)](https://github.com/MrSaikatS/nextjs-starter-fullstack-node/stargazers) [![GitHub forks](https://img.shields.io/github/forks/MrSaikatS/nextjs-starter-fullstack-node?style=social)](https://github.com/MrSaikatS/nextjs-starter-fullstack-node/network/members)
+Built with ❤️ by the Training AI Stack Team
