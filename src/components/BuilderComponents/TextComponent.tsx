@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentConfig } from "@/types/builder";
+import type { ComponentConfig, TextProps } from "@/types/builder";
 
 interface TextComponentProps {
   component: ComponentConfig;
@@ -10,9 +10,9 @@ interface TextComponentProps {
 
 export function TextComponent({ component }: TextComponentProps) {
   const { props, style } = component;
-  const { content, fontSize, fontWeight, color } = props;
+  const { content, fontSize, fontWeight, color } = props as TextProps;
 
-  const fontSizeClasses = {
+  const fontSizeClasses: Record<TextProps["fontSize"], string> = {
     sm: "text-sm",
     base: "text-base",
     lg: "text-lg",
@@ -20,7 +20,7 @@ export function TextComponent({ component }: TextComponentProps) {
     "2xl": "text-2xl",
   };
 
-  const fontWeightClasses = {
+  const fontWeightClasses: Record<TextProps["fontWeight"], string> = {
     normal: "font-normal",
     semibold: "font-semibold",
     bold: "font-bold",

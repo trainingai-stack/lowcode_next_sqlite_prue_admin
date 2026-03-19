@@ -128,4 +128,7 @@ export type BuilderAction =
   | { type: "REORDER_COMPONENTS"; payload: ComponentConfig[] }
   | { type: "SELECT_COMPONENT"; payload: string | null }
   | { type: "UNDO" }
-  | { type: "REDO" };
+  | { type: "REDO" }
+  | { type: "MOVE_COMPONENT_UP"; payload: string }
+  | { type: "MOVE_COMPONENT_DOWN"; payload: string }
+  | { type: "DUPLICATE_COMPONENT"; payload: ComponentConfig };

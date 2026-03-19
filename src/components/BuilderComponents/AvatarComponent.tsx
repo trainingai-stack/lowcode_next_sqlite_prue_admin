@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentConfig } from "@/types/builder";
+import type { ComponentConfig, AvatarProps } from "@/types/builder";
 
 interface AvatarComponentProps {
   component: ComponentConfig;
@@ -10,16 +10,16 @@ interface AvatarComponentProps {
 
 export function AvatarComponent({ component }: AvatarComponentProps) {
   const { props, style } = component;
-  const { imageUrl, size, shape } = props;
+  const { imageUrl, size, shape } = props as AvatarProps;
 
-  const sizeClasses = {
+  const sizeClasses: Record<AvatarProps["size"], string> = {
     sm: "w-24 h-24",
     md: "w-32 h-32",
     lg: "w-48 h-48",
     xl: "w-64 h-64",
   };
 
-  const shapeClasses = {
+  const shapeClasses: Record<AvatarProps["shape"], string> = {
     circle: "rounded-full",
     square: "rounded-none",
     rounded: "rounded-lg",

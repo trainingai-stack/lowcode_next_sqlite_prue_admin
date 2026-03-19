@@ -93,6 +93,43 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
       return state;
     }
 
+    case "MOVE_COMPONENT_UP": {
+      const index = state.components.findIndex((c) => c.id === action.payload);
+      if (index <= 0) return state;
+      const newComponents = [...state.components];
+      [newComponents[index - 1], newComponents[index]] = [newComponents[index], newComponents[index - 1]];
+      return {
+        ...state,
+        components: newComponents,
+        history: [...state.history.slice(0, state.historyIndex + 1), newComponents],
+        historyIndex: state.historyIndex + 1,
+      };
+    }
+
+    case "MOVE_COMPONENT_DOWN": {
+      const index = state.components.findIndex((c) => c.id === action.payload);
+      if (index === -1 || index >= state.components.length - 1) return state;
+      const newComponents = [...state.components];
+      [newComponents[index], newComponents[index + 1]] = [newComponents[index + 1], newComponents[index]];
+      return {
+        ...state,
+        components: newComponents,
+        history: [...state.history.slice(0, state.historyIndex + 1), newComponents],
+        historyIndex: state.historyIndex + 1,
+      };
+    }
+
+    case "DUPLICATE_COMPONENT": {
+      const newComponents = [...state.components, action.payload];
+      return {
+        ...state,
+        components: newComponents,
+        history: [...state.history.slice(0, state.historyIndex + 1), newComponents],
+        historyIndex: state.historyIndex + 1,
+        selectedComponentId: action.payload.id,
+      };
+    }
+
     default:
       return state;
   }
@@ -133,6 +170,18 @@ export function useBuilder(initialComponents: ComponentConfig[] = []) {
     dispatch({ type: "REDO" });
   }, []);
 
+  const moveComponentUp = useCallback((id: string) => {
+    dispatch({ type: "MOVE_COMPONENT_UP", payload: id });
+  }, []);
+
+  const moveComponentDown = useCallback((id: string) => {
+    dispatch({ type: "MOVE_COMPONENT_DOWN", payload: id });
+  }, []);
+
+  const duplicateComponent = useCallback((component: ComponentConfig) => {
+    dispatch({ type: "DUPLICATE_COMPONENT", payload: component });
+  }, []);
+
   return {
     components: state.components,
     selectedComponentId: state.selectedComponentId,
@@ -145,5 +194,8 @@ export function useBuilder(initialComponents: ComponentConfig[] = []) {
     selectComponent,
     undo,
     redo,
+    moveComponentUp,
+    moveComponentDown,
+    duplicateComponent,
   };
 }

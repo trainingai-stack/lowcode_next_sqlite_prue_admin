@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentConfig } from "@/types/builder";
+import type { ComponentConfig, SectionProps } from "@/types/builder";
 
 interface SectionComponentProps {
   component: ComponentConfig;
@@ -10,9 +10,9 @@ interface SectionComponentProps {
 
 export function SectionComponent({ component }: SectionComponentProps) {
   const { props, style } = component;
-  const { title, backgroundColor, padding } = props;
+  const { title, backgroundColor, padding } = props as SectionProps;
 
-  const paddingClasses = {
+  const paddingClasses: Record<SectionProps["padding"], string> = {
     sm: "py-4 px-4",
     md: "py-8 px-6",
     lg: "py-12 px-8",
